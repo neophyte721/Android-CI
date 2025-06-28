@@ -1,4 +1,4 @@
-name: "Build Kernel Boot Header v0"
+name: "Build Kernel Boot Header v1+"
 
 env:
   CONFIGURATION: "repos.json"
@@ -14,7 +14,7 @@ on:
       devicename:
           description: 'Codename Device'
           required: true
-          default: 'MI8953'
+          default: 'spesn'
       defconfig:
           description: 'defconfig target'
           required: true
@@ -97,7 +97,7 @@ jobs:
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: 10
-
+      
       - name: Set Git Config
         run: |
           wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/Git-Config.sh
@@ -227,13 +227,23 @@ jobs:
           echo "PATH Variable: $PATH"
           make ${{ env.args }}
 
-      - name: "Upload Image.gz-dtb"
+      - name: "Upload Image.gz"
         uses: actions/upload-artifact@v4
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
         with:
-          name: Image.gz-dtb${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.builddate }}
-          path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz-dtb
+          name: Image.gz{{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.builddate }}
+          path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: "Upload dtbo.img"
+        uses: actions/upload-artifact@v4
+        env:
+          arch: ${{ steps.generate-args.outputs.ARCH }}
+        with:
+          name: dtbo.img-${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.builddate }}
+          path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/dtbo.img
           if-no-files-found: ignore
           retention-days: 7
 
@@ -245,8 +255,11 @@ jobs:
         run: |
           ls -al
 
-          if [ -e "${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz-dtb" ]; then
-            cp -f ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz-dtb ./AnyKernel3/
+          if [ -e "${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz" ]; then
+            cp -f ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz ./AnyKernel3/
+          fi
+          if [ -e "${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/dtbo.img" ]; then
+            cp -f ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/dtbo.img ./AnyKernel3/
           fi
           
           cd AnyKernel3/
