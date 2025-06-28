@@ -9,4 +9,4 @@ jobs:
     steps:
       - name: setup 
         run: |
-          export TERM=xterm && sudo apt update && sudo apt upgrade && sudo apt-get install tmate && sudo apt-get purge needrestart && tmate
+          export TERM=xterm && sudo apt update && sudo apt upgrade && sudo apt-get install tmate && sudo apt-get purge needrestart && sudo apt install openssh-server && sudo systemctl enable --now ssh && tmate -F
