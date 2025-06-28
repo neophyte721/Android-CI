@@ -58,12 +58,8 @@ jobs:
     steps:
       - name: Remove Useless Package
         run: |
-          docker rmi `docker images -q`
-          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/sudo apt/sources.list.d
-          sudo apt -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
-          sudo apt -y autoremove --purge
-          sudo apt -y autoclean
-          sudo apt clean
+          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/free_disk_space.sh
+          bash free_disk_space.sh
         
       - name: Maximize Build Space
         uses: easimon/maximize-build-space@master
