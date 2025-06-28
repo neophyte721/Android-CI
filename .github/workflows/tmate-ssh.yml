@@ -9,8 +9,4 @@ jobs:
     steps:
       - name: setup 
         run: |
-          sudo apt-get install tmate
-
-      - name: get link
-        run: | 
-          tmate
+          export TERM=xterm && sudo apt-get install tmate && tmate
