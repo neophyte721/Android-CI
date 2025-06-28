@@ -1,0 +1,16 @@
+name: "tmate ssh"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup 
+        run: |
+          sudo apt-get install tmate
+
+      - name: get link
+        run: | 
+          tmate
