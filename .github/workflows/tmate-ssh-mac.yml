@@ -1,0 +1,20 @@
+name: "Tmate macOS SSH"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-10.15
+    steps:
+      - name: install Homebrew 
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      - name: install tmate  
+        run: |
+          brew install tmate
+
+      - name: tmate ssh link 
+        run: |
+          tmate -F

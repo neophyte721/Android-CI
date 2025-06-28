@@ -1,4 +1,4 @@
-name: "tmate ssh"
+name: "Tmate Ubuntu SSH"
 
 on:
   workflow_dispatch:
