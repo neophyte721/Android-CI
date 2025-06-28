@@ -61,15 +61,10 @@ jobs:
           wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/free_disk_space.sh
           bash free_disk_space.sh
         
-      - name: Maximize Build Space
-        uses: easimon/maximize-build-space@master
-          with:
-          root-reserve-mb: 1024
-          swap-size-mb: 10240
-          remove-dotnet: 'true'
-          temp-reserve-mb: 1024
-          remove-android: 'true'
-          remove-haskell: 'true'
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 12
 
       - name: Prepare Environment
         run: |
