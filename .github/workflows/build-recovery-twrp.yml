@@ -75,10 +75,8 @@ jobs:
 
       - name: Install repo
         run: |
-          mkdir ~/bin
-          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-          chmod a+x ~/bin/repo
-          sudo ln -sf ~/bin/repo /usr/bin/repo
+          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/Install_Repo.sh
+          bash Install_Repo.sh
 
       - name: Init Repo
         run: |
