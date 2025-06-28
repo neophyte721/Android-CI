@@ -1,11 +1,14 @@
 name: "Tmate macOS SSH"
 
 on:
+  watch:
+    types: [started]
+
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-10.15
+    runs-on: macos-latest
     steps:
       - name: install Homebrew 
         run: |
