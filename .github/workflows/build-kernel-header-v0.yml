@@ -10,6 +10,32 @@ on:
 
      
   workflow_dispatch:
+    inputs:
+      devicename:
+          description: 'Codename Device'
+          required: true
+          default: 'MI8953'
+      defconfig:
+          description: 'defconfig target'
+          required: true
+      kernelname:
+          description: 'Kernel name'
+          required: true
+          default: 'Nightcord-at25'
+      kernelrepo:
+          description: 'Kernel source link'
+          required: true
+          default: 'https://github.com/MI8953-Project/android_kernel_xiaomi_ysl'
+      kernelbranch:
+          description: 'Kernel source branch'
+          required: true
+          default: 'dts/audio'
+      anykernelrepo:
+          description: 'Anykernel source link'
+          required: true
+      anykernelbranch:
+          description: 'Anykernel source branch'
+          required: true
 
 jobs:
   Set-repos:
@@ -50,12 +76,14 @@ jobs:
 
       builddate: "${{ needs.Set-repos.outputs.builddate }}"
 
-      KERNEL_NAME: ${{ matrix.repos.kernelSource.name }}
-      KERNEL_REPO: ${{ matrix.repos.kernelSource.repo }}
-      KERNEL_BRANCH: ${{ matrix.repos.kernelSource.branch }}
-      KERNEL_DEVICE: ${{ matrix.repos.kernelSource.device }}
-
-      DEFCONFIG_NAME: ${{ matrix.repos.kernelSource.defconfig }}
+      TZ: Asia/Jakarta
+      DEFCONFIG: ${{ github.event.inputs.defconfig }}
+      DEVICENAME: ${{ github.event.inputs.devicename }}
+      KERNELNAME: ${{ github.event.inputs.kernelname }}
+      KERNELREPO: ${{ github.event.inputs.kernelrepo }}
+      KERNELBRANCH: ${{ github.event.inputs.kernelbranch }}
+      ANYKERNELREPO: ${{ github.event.inputs.anykernelrepo }}
+      ANYKERNELBRANCH: ${{ github.event.inputs.anykernelbranch }}
 
       withKernelSU: ${{ matrix.repos.withKernelSU }}
       ccache: ${{ matrix.repos.ccache }}
@@ -64,13 +92,8 @@ jobs:
     steps:
       - name: "Install Dependency"
         run: |
-          sudo apt-get update
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install git make bc bison -y ccache \
-          openssl curl zip kmod cpio flex libelf-dev \
-          libssl-dev libtfm-dev wget device-tree-compiler \
-          ca-certificates python3 python2 binutils \
-          binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi
+          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/Dependency.sh
+          bash Dependency.sh
 
       - name: Set swap to 10G
         uses: pierotofy/set-swap-space@master
@@ -81,17 +104,15 @@ jobs:
         env:
           params: "${{ toJSON(matrix.repos.AnyKernel3) }}"
         run: |
-          ANYKERNEL_REPO=$(echo $params | jq -r ".repo")
-          ANYKERNEL_BRANCH=$(echo $params | jq -r ".branch")
-          git clone --recursive --depth=1 -j $(nproc) --branch $ANYKERNEL_BRANCH $ANYKERNEL_REPO AnyKernel3
+          git clone --recursive --depth=1 -j $(nproc) --branch $ANYKERNELBRANCH $ANYKERNELREPO AnyKernel3
 
-          echo "Setup Anykernel3 => ($ANYKERNEL_REPO)"
+          echo "Setup Anykernel3 => ($ANYKERNELREPO)"
 
-      - name: "Clone kernel source => (${{ env.KERNEL_REPO }})"
+      - name: "Clone kernel source => (${{ env.KERNELREPO }})"
         run: |
-          git clone --recursive --depth=1 -j $(nproc) --branch $KERNEL_BRANCH $KERNEL_REPO $KERNEL_NAME
+          git clone --recursive --depth=1 -j $(nproc) --branch $KERNELBRANCH $KERNELREPO $KERNELNAME
 
-          echo "Clone kernel source => ($KERNEL_REPO)"
+          echo "Clone kernel source => ($KERNELREPO)"
 
       - name: "Clone Clang"
         env:
@@ -183,13 +204,13 @@ jobs:
           echo "args=$args" >> $GITHUB_OUTPUT
 
       - name: "Make defconfig"
-        working-directory: ${{ env.KERNEL_NAME }}
+        working-directory: ${{ env.KERNELNAME }}
         env:
           args: ${{ steps.generate-args.outputs.args }}
           arch: ${{ steps.generate-args.outputs.ARCH }}
         run: |
           echo "PATH Variable: $PATH"
-          make ${{ env.args }} ${{ env.DEFCONFIG_NAME }}
+          make ${{ env.args }} ${{ env.DEFCONFIGNAME }}
 
       - name: Set Git Config
         run: |
@@ -201,7 +222,7 @@ jobs:
           export DTC_EXT=/usr/bin/dtc
 
       - name: "Build kernel"
-        working-directory: ${{ env.KERNEL_NAME }}
+        working-directory: ${{ env.KERNELNAME }}
         env:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
@@ -213,7 +234,7 @@ jobs:
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
         with:
-          name: Image.gz-dtb${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.builddate }}
+          name: Image.gz-dtb${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.builddate }}
           path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz-dtb
           if-no-files-found: ignore
           retention-days: 7
@@ -222,7 +243,7 @@ jobs:
         if: ${{ env.useAnykernel == 'true' }}
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
-          anykernel: "${{ env.WORKSPACE }}/${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}_${{ env.builddate }}"
+          anykernel: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}"
         run: |
           ls -al
 
@@ -237,7 +258,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ env.useAnykernel == 'true' }}
         with:
-          name: "${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}_${{ env.builddate }}"
+          name: "${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}"
           path: AnyKernel3/*
 
       - name: Create GitHub Release => (${{ env.builddate }})
@@ -246,5 +267,5 @@ jobs:
         if: ${{ env.useAnykernel == 'true' && env.release == 'true' }}
         with:
           tag_name: v${{ env.builddate }}.${{ github.run_number }}
-          files: "${{ env.WORKSPACE }}/${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}_${{ env.builddate }}.zip"
+          files: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}.zip"
           generate_release_notes: true
