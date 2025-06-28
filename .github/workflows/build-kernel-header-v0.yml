@@ -1,4 +1,4 @@
-name: "Build kernels"
+name: "Build Kernel Boot Header v0"
 
 env:
   CONFIGURATION: "repos.json"
