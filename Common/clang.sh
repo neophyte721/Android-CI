@@ -33,17 +33,10 @@ chmod +x build-llvm.py
 ./build-llvm.py \
     --defines LLVM_PARALLEL_COMPILE_JOBS="$(nproc)" LLVM_PARALLEL_LINK_JOBS="$(nproc)" CMAKE_C_FLAGS=-O3 CMAKE_CXX_FLAGS=-O3 \
     --install-folder "$install" \
-    --assertions \
-    --build-target distribution \
-    --check-targets clang lld llvm \
-    --install-target distribution \
-    --projects clang lld \
     --quiet-cmake \
     --bolt \
-    --lto thin \
     --pgo llvm \
     --shallow-clone \
-    --show-build-commands \
     --targets ARM AArch64 X86 \
     --ref "release/18.x" \
     --vendor-string "$LLVM_NAME" 2>&1 | tee build.log
