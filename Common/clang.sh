@@ -35,7 +35,6 @@ chmod +x build-llvm.py
     --install-folder "$install" \
     --quiet-cmake \
     --bolt \
-    --pgo llvm \
     --shallow-clone \
     --targets ARM AArch64 X86 \
     --ref "release/18.x" \
