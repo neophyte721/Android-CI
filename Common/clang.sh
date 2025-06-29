@@ -40,6 +40,9 @@ chmod +x build-llvm.py
     --install-target distribution \
     --projects clang lld \
     --quiet-cmake \
+    --bolt \
+    --lto thin \
+    --pgo llvm \
     --shallow-clone \
     --show-build-commands \
     --targets ARM AArch64 X86 \
