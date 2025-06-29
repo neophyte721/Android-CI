@@ -34,7 +34,6 @@ chmod +x build-llvm.py
     --defines LLVM_PARALLEL_COMPILE_JOBS="$(nproc)" LLVM_PARALLEL_LINK_JOBS="$(nproc)" CMAKE_C_FLAGS=-O3 CMAKE_CXX_FLAGS=-O3 \
     --install-folder "$install" \
     --assertions \
-    --build-stage1-only \
     --build-target distribution \
     --check-targets clang lld llvm \
     --install-target distribution \
