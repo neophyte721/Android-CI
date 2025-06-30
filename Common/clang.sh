@@ -89,6 +89,18 @@ rm -fr ./*
 cp -r ../install/* .
 git lfs install
 git lfs track "clang-18"
+git lfs track "opt"
+git lfs track "clang-linker-wrapper"
+git lfs track "clang-repl"
+git lfs track "llc"
+git lfs track "llvm-lto2"
+git lfs track "llvm-lto"
+git lfs track "libLTO.so"
+git lfs track "bugpoint"
+git lfs track "clang-scan-deps"
+git lfs track "lld"
+git lfs track "libclang.so.18.1.8"
+git lfs track "libclang-cpp.so.18.1"
 git checkout README.md # keep this as it's not part of the toolchain itself
 git add .
 git commit -asm "Nightcord: Update to $rel_date build
