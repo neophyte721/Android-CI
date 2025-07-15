@@ -15,7 +15,7 @@
 # limitations under the License.
 
 tgp() {
-    curl -sX POST https://api.telegram.org/bot"$TOKEN"/sendPhoto -d photo=$PHOTO -d chat_id="$CHAT_CH" -d message_thread_id="179628" -d parse_mode=Markdown -d disable_web_page_preview=true -d text="$1" &>/dev/null -d caption="$ROMNAME | $ANDROID | $TYPE | $DEVICENAME
+    curl -sX POST https://api.telegram.org/bot"$TOKEN"/sendPhoto -d photo=$PHOTO -d chat_id="$CHAT_CH" -d parse_mode=Markdown -d disable_web_page_preview=true -d text="$1" &>/dev/null -d caption="$ROMNAME | $ANDROID | $TYPE | $DEVICENAME
 Build Date: $DATE
 Author: $MAINTAINER
 
