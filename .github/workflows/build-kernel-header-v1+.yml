@@ -74,7 +74,6 @@ jobs:
 
       builddate: "${{ needs.Set-repos.outputs.builddate }}"
 
-      TZ: Asia/Jakarta
       DEFCONFIG: ${{ github.event.inputs.defconfig }}
       DEVICENAME: ${{ github.event.inputs.devicename }}
       KERNELNAME: ${{ github.event.inputs.kernelname }}
