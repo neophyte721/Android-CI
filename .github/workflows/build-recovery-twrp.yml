@@ -45,7 +45,6 @@ jobs:
 
       builddate: "${{ needs.Set-repos.outputs.builddate }}"
 
-      TZ: Asia/Jakarta
       DEVICENAME: ${{ github.event.inputs.devicename }}
       DEVICEPATH: ${{ github.event.inputs.devicepath }}
       DEVICEREPO: ${{ github.event.inputs.devicerepo }}
