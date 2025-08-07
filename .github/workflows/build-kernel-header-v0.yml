@@ -116,6 +116,11 @@ jobs:
 
           echo "Clone kernel source => ($KERNELREPO)"
 
+      - name: "SukiSU update"
+        run: |
+          cd $KERNELNAME
+          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
+
       - name: "Clone Clang"
         env:
           toolchains: "${{ toJSON(matrix.repos.toolchains) }}"
