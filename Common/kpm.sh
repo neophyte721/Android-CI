@@ -1,7 +1,7 @@
 echo "Starting kernel patching process..."
 
 # Change to kernel directory
-cd out/arch/arm64/boot/ || {
+cd ${{ env.OUT_DIR }}/arch/arm64/boot/ || {
     echo "Error: Failed to enter kernel directory!" >&2
     exit 1
 }
