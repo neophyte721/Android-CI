@@ -2,8 +2,8 @@
   {
     "toolchains": [
       {
-        "repo": "https://github.com/KanariaAlt/Nightcord_Clang",
-        "branch": "main",
+        "repo": "https://github.com/kdrag0n/proton-clang",
+        "branch": "master",
         "name": "proton-clang",
         "binPath": ["bin"]
       }
