@@ -24,5 +24,5 @@ echo "Patching kernel image..."
 }
 
 # Replace original image
-rm -f Image.gz-dtb
-mv oImage Image.gz-dtb
+rm -f Image
+mv oImage Image
