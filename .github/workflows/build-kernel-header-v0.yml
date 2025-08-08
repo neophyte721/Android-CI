@@ -119,7 +119,7 @@ jobs:
       - name: "SukiSU update"
         run: |
           cd $KERNELNAME
-          curl -LSs "https://raw.githubusercontent.com/Snow-Irony/SukiSU-Ultra/nongki/kernel/setup.sh" | bash -s nongki
+          curl -LSs "https://raw.githubusercontent.com/Snow-Irony/SukiSU-Ultra/susfs-main/kernel/setup.sh" | bash -s susfs-main
 
       - name: "Clone Clang"
         env:
