@@ -116,10 +116,11 @@ jobs:
 
           echo "Clone kernel source => ($KERNELREPO)"
 
-      - name: "SukiSU update"
+      - name: "Clone dts kernel source => (${{ env.KERNELREPO }})"
         run: |
-          cd $KERNELNAME
-          curl -LSs "https://raw.githubusercontent.com/Snow-Irony/SukiSU-Ultra/susfs-main/kernel/setup.sh" | bash -s susfs-main
+          git clone --recursive --depth=1 -j $(nproc) --branch $KERNELBRANCH $KERNELREPO $KERNELNAME/arch/arm64/boot/dts/vendor
+
+          echo "Clone kernel source => ($KERNELREPO)"
 
       - name: "Clone Clang"
         env:
@@ -230,8 +231,6 @@ jobs:
         run: |
           echo "PATH Variable: $PATH"
           make ${{ env.args }}
-          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/kpm.sh
-          bash kpm.sh
 
       - name: "Upload Image.gz-dtb"
         uses: actions/upload-artifact@v4
