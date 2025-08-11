@@ -118,7 +118,7 @@ jobs:
 
       - name: "Clone dts kernel source => (${{ env.KERNELREPO }})"
         run: |
-          git clone --recursive --depth=1 -j $(nproc) --branch $KERNELBRANCH $KERNELREPO $KERNELNAME/arch/arm64/boot/dts/vendor
+          git clone --recursive --depth=1 -j $(nproc) https://github.com/Snow-Irony/kernel-devicetree-msm8953_4.19 $KERNELNAME/arch/arm64/boot/dts/vendor
 
           echo "Clone kernel source => ($KERNELREPO)"
 
