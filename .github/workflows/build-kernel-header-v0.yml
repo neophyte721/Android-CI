@@ -116,12 +116,6 @@ jobs:
 
           echo "Clone kernel source => ($KERNELREPO)"
 
-      - name: "Clone dts kernel source => (${{ env.KERNELREPO }})"
-        run: |
-          git clone --recursive --depth=1 -j $(nproc) https://github.com/Snow-Irony/kernel-devicetree-msm8953_4.19 kernel/arch/arm64/boot/dts/vendor
-
-          echo "Clone kernel source => ($KERNELREPO)"
-
       - name: "Clone Clang"
         env:
           toolchains: "${{ toJSON(matrix.repos.toolchains) }}"
@@ -239,26 +233,6 @@ jobs:
         with:
           name: Image.gz-dtb${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.builddate }}
           path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz-dtb
-          if-no-files-found: ignore
-          retention-days: 7
-
-      - name: "Upload Image"
-        uses: actions/upload-artifact@v4
-        env:
-          arch: ${{ steps.generate-args.outputs.ARCH }}
-        with:
-          name: Image
-          path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image
-          if-no-files-found: ignore
-          retention-days: 7
-
-      - name: "Upload dtb"
-        uses: actions/upload-artifact@v4
-        env:
-          arch: ${{ steps.generate-args.outputs.ARCH }}
-        with:
-          name: msm8953-qrd-sku3-vince.dtb
-          path: ${{ env.OUT_DIR }}/arch/arm64/boot/dts/qcom/msm8953-qrd-sku3-vince.dtb
           if-no-files-found: ignore
           retention-days: 7
 
