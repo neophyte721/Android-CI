@@ -2,27 +2,27 @@
   {
     "toolchains": [
       {
-        "repo": "https://github.com/kdrag0n/proton-clang",
-        "branch": "master",
-        "name": "proton-clang",
+        "repo": "https://gitlab.com/Panchajanya1999/azure-clang",
+        "branch": "main",
+        "name": "azure-clang",
         "binPath": ["bin"]
       }
     ],
     "params": {
      "ARCH": "arm64",
-      "CC": "proton-clang/bin/clang",
+      "CC": "azure-clang/bin/clang",
       "externalCommand": {
-        "CROSS_COMPILE": "proton-clang/bin/aarch64-linux-gnu-",
-        "CROSS_COMPILE_ARM32": "proton-clang/bin/arm-linux-gnueabi-",
-        "AR": "proton-clang/bin/llvm-ar",
-        "NM": "proton-clang/bin/llvm-nm",
-        "OBJCOPY": "proton-clang/bin/llvm-objcopy",
-        "OBJDUMP": "proton-clang/bin/llvm-objdump",
-        "READELF": "proton-clang/bin/llvm-readelf",
-        "OBJSIZE": "proton-clang/bin/llvm-size",
-        "STRIP": "proton-clang/bin/llvm-strip",
-        "LLVM_AR": "proton-clang/bin/llvm-ar",
-        "LLVM_DIS": "proton-clang/bin/llvm-dis"
+        "CROSS_COMPILE": "azure-clang/bin/aarch64-linux-gnu-",
+        "CROSS_COMPILE_ARM32": "azure-clang/bin/arm-linux-gnueabi-",
+        "AR": "azure-clang/bin/llvm-ar",
+        "NM": "azure-clang/bin/llvm-nm",
+        "OBJCOPY": "azure-clang/bin/llvm-objcopy",
+        "OBJDUMP": "azure-clang/bin/llvm-objdump",
+        "READELF": "azure-clang/bin/llvm-readelf",
+        "OBJSIZE": "azure-clang/bin/llvm-size",
+        "STRIP": "azure-clang/bin/llvm-strip",
+        "LLVM_AR": "azure-clang/bin/llvm-ar",
+        "LLVM_DIS": "azure-clang/bin/llvm-dis"
       }
     },
     "AnyKernel3": {

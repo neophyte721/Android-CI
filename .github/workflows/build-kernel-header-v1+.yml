@@ -14,14 +14,22 @@ on:
       devicename:
           description: 'Codename Device'
           required: true
-          default: 'spesn'
+          default: 'ginkgo'
       defconfig:
           description: 'defconfig target'
           required: true
       kernelname:
           description: 'Kernel name'
           required: true
-          default: 'Nightcord-at25'
+          default: 'neophyte'
+      kernelversion:
+          description: 'Kernel version'
+          required: true
+          default: 'v3.0'
+      kernelvarian:
+          description: 'Kernel varian'
+          required: true
+          default: 'Sukisu'
       kernelrepo:
           description: 'Kernel source link'
           required: true
@@ -31,9 +39,11 @@ on:
       anykernelrepo:
           description: 'Anykernel source link'
           required: true
+          default: 'https://github.com/neophyte721/AnyKernel3'
       anykernelbranch:
           description: 'Anykernel source branch'
           required: true
+          default: 'master'
 
 jobs:
   Set-repos:
@@ -77,6 +87,8 @@ jobs:
       DEFCONFIG: ${{ github.event.inputs.defconfig }}
       DEVICENAME: ${{ github.event.inputs.devicename }}
       KERNELNAME: ${{ github.event.inputs.kernelname }}
+      KERNELVERSION: ${{ github.event.inputs.kernelversion }}
+      KERNELVARIAN: ${{ github.event.inputs.kernelvarian }}
       KERNELREPO: ${{ github.event.inputs.kernelrepo }}
       KERNELBRANCH: ${{ github.event.inputs.kernelbranch }}
       ANYKERNELREPO: ${{ github.event.inputs.anykernelrepo }}
@@ -89,17 +101,18 @@ jobs:
     steps:
       - name: "Install Dependency"
         run: |
-          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/Dependency.sh
+          wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/Common/Dependency.sh
           bash Dependency.sh
 
-      - name: Set swap to 10G
-        uses: pierotofy/set-swap-space@master
-        with:
-          swap-size-gb: 10
-      
+      - name: Set cache to 50G
+        run: |
+          export USE_CCACHE=1
+          ccache -M 50G
+          export CCACHE_COMPRESS=1
+
       - name: Set Git Config
         run: |
-          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/Git-Config.sh
+          wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/Common/Git-Config.sh
           bash Git-Config.sh
 
       - name: "Setup Anykernel3"
@@ -212,7 +225,7 @@ jobs:
           arch: ${{ steps.generate-args.outputs.ARCH }}
         run: |
           echo "PATH Variable: $PATH"
-          make ${{ env.args }} ${{ env.DEFCONFIGNAME }}
+          make ${{ env.args }} ${{ env.DEFCONFIG }}
 
       - name: dtc
         run: |
@@ -231,7 +244,7 @@ jobs:
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
         with:
-          name: Image.gz{{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.builddate }}
+          name: Image.gz{{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}-${{ env.builddate }}
           path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz
           if-no-files-found: ignore
           retention-days: 7
@@ -241,7 +254,7 @@ jobs:
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
         with:
-          name: dtbo.img-${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.builddate }}
+          name: dtbo.img-${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}-${{ env.builddate }}
           path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/dtbo.img
           if-no-files-found: ignore
           retention-days: 7
@@ -250,7 +263,7 @@ jobs:
         if: ${{ env.useAnykernel == 'true' }}
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
-          anykernel: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}"
+          anykernel: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}_${{ env.builddate }}"
         run: |
           ls -al
 
@@ -268,7 +281,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ env.useAnykernel == 'true' }}
         with:
-          name: "${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}"
+          name: "${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}_${{ env.builddate }}"
           path: AnyKernel3/*
 
       - name: Create GitHub Release => (${{ env.builddate }})
@@ -277,5 +290,5 @@ jobs:
         if: ${{ env.useAnykernel == 'true' && env.release == 'true' }}
         with:
           tag_name: v${{ env.builddate }}.${{ github.run_number }}
-          files: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}.zip"
+          files: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}_${{ env.builddate }}.zip"
           generate_release_notes: true
