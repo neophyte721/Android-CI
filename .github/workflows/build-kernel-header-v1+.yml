@@ -104,12 +104,6 @@ jobs:
           wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/Common/Dependency.sh
           bash Dependency.sh
 
-      - name: Set cache to 50G
-        run: |
-          export USE_CCACHE=1
-          ccache -M 50G
-          export CCACHE_COMPRESS=1
-
       - name: Set Git Config
         run: |
           wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/Common/Git-Config.sh
