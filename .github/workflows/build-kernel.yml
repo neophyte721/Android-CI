@@ -1,4 +1,4 @@
-name: "Build Kernel Boot Header v1+"
+name: "Build Kernel"
 
 env:
   CONFIGURATION: "repos.json"
@@ -8,20 +8,24 @@ on:
   watch:
     types: [started]
 
-     
   workflow_dispatch:
     inputs:
       devicename:
           description: 'Codename Device'
           required: true
-          default: 'spesn'
+          default: 'ginkgo'
       defconfig:
           description: 'defconfig target'
           required: true
       kernelname:
           description: 'Kernel name'
           required: true
-          default: 'Nightcord-at25'
+      kernelversion:
+          description: 'Kernel version'
+          required: true
+      kernelvarian:
+          description: 'Kernel varian'
+          required: true
       kernelrepo:
           description: 'Kernel source link'
           required: true
@@ -31,9 +35,11 @@ on:
       anykernelrepo:
           description: 'Anykernel source link'
           required: true
+          default: 'https://github.com/neophyte721/AnyKernel3'
       anykernelbranch:
           description: 'Anykernel source branch'
           required: true
+          default: 'master'
 
 jobs:
   Set-repos:
@@ -77,30 +83,26 @@ jobs:
       DEFCONFIG: ${{ github.event.inputs.defconfig }}
       DEVICENAME: ${{ github.event.inputs.devicename }}
       KERNELNAME: ${{ github.event.inputs.kernelname }}
+      KERNELVERSION: ${{ github.event.inputs.kernelversion }}
+      KERNELVARIAN: ${{ github.event.inputs.kernelvarian }}
       KERNELREPO: ${{ github.event.inputs.kernelrepo }}
       KERNELBRANCH: ${{ github.event.inputs.kernelbranch }}
       ANYKERNELREPO: ${{ github.event.inputs.anykernelrepo }}
       ANYKERNELBRANCH: ${{ github.event.inputs.anykernelbranch }}
 
-      withKernelSU: ${{ matrix.repos.withKernelSU }}
       ccache: ${{ matrix.repos.ccache }}
       useAnykernel: ${{ matrix.repos.AnyKernel3.use }}
       release: ${{ matrix.repos.AnyKernel3.release }}
     steps:
       - name: "Install Dependency"
         run: |
-          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/Dependency.sh
-          bash Dependency.sh
+          wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/dependency.sh
+          bash dependency.sh
 
-      - name: Set swap to 10G
-        uses: pierotofy/set-swap-space@master
-        with:
-          swap-size-gb: 10
-      
       - name: Set Git Config
         run: |
-          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/Git-Config.sh
-          bash Git-Config.sh
+          wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/git-config.sh
+          bash git-config.sh
 
       - name: "Setup Anykernel3"
         env:
@@ -129,7 +131,7 @@ jobs:
             toolchain_branch=$(echo $toolchains | jq -r ".[$i].branch")
             # From archive
             toolchain_url=$(echo $toolchains | jq -r ".[$i].url")
-            
+
             echo $toolchain_url
             if [ -z "${toolchain_url:-}" ] || [ "$toolchain_url" = "null" ];  then
               git clone --recursive --depth=1 -j $(nproc) --branch $toolchain_branch $toolchain_repo $toolchain_name
@@ -200,7 +202,7 @@ jobs:
             fi
             args="$args $key=$value"
           done < <(jq -r '.externalCommand | to_entries[] | "\(.key)=\(.value)"' <<< "$params")
-        
+
           echo "$args"
           echo "ARCH=$ARCH" >> $GITHUB_OUTPUT
           echo "args=$args" >> $GITHUB_OUTPUT
@@ -212,7 +214,7 @@ jobs:
           arch: ${{ steps.generate-args.outputs.ARCH }}
         run: |
           echo "PATH Variable: $PATH"
-          make ${{ env.args }} ${{ env.DEFCONFIGNAME }}
+          make ${{ env.args }} ${{ env.DEFCONFIG }}
 
       - name: dtc
         run: |
@@ -231,7 +233,7 @@ jobs:
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
         with:
-          name: Image.gz{{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.builddate }}
+          name: Image.gz{{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}-${{ env.builddate }}
           path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/Image.gz
           if-no-files-found: ignore
           retention-days: 7
@@ -241,7 +243,7 @@ jobs:
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
         with:
-          name: dtbo.img-${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.builddate }}
+          name: dtbo.img-${{ env.KERNEL_DEVICE }}-${{ env.KERNEL_NAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}-${{ env.builddate }}
           path: ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/dtbo.img
           if-no-files-found: ignore
           retention-days: 7
@@ -250,7 +252,7 @@ jobs:
         if: ${{ env.useAnykernel == 'true' }}
         env:
           arch: ${{ steps.generate-args.outputs.ARCH }}
-          anykernel: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}"
+          anykernel: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}_${{ env.builddate }}"
         run: |
           ls -al
 
@@ -260,7 +262,7 @@ jobs:
           if [ -e "${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/dtbo.img" ]; then
             cp -f ${{ env.OUT_DIR }}/arch/${{ env.arch }}/boot/dtbo.img ./AnyKernel3/
           fi
-          
+
           cd AnyKernel3/
           zip -q -r "${{ env.anykernel }}.zip" *
 
@@ -268,7 +270,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ env.useAnykernel == 'true' }}
         with:
-          name: "${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}"
+          name: "${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}_${{ env.builddate }}"
           path: AnyKernel3/*
 
       - name: Create GitHub Release => (${{ env.builddate }})
@@ -277,5 +279,5 @@ jobs:
         if: ${{ env.useAnykernel == 'true' && env.release == 'true' }}
         with:
           tag_name: v${{ env.builddate }}.${{ github.run_number }}
-          files: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}_${{ env.builddate }}.zip"
+          files: "${{ env.WORKSPACE }}/${{ env.DEVICENAME }}-${{ env.KERNELNAME }}-${{ env.KERNELVERSION }}-${{ env.KERNELVARIAN }}_${{ env.builddate }}.zip"
           generate_release_notes: true

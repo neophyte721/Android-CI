@@ -15,10 +15,8 @@
 # limitations under the License.
 
 echo "=============================================================================="
-echo "Install Repo Tool"
+echo "Add Git Config"
 echo "=============================================================================="
 
-mkdir ~/bin
-curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-chmod a+x ~/bin/repo
-sudo ln -sf ~/bin/repo /usr/bin/repo
+git config --global user.name "neophyte721"
+git config --global user.email "alprjkt@gmail.com"
