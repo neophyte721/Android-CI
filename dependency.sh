@@ -18,7 +18,7 @@ echo "==========================================================================
 echo "Update More Package & Install Dependecy"
 echo "=============================================================================="
 
-sudo apt-get update
+sudo apt update -y && sudo apt upgrade -y && sudo apt install nano bc bison ca-certificates curl flex gcc git libc6-dev libssl-dev openssl python-is-python3 ssh wget zip zstd sudo make clang gcc-arm-linux-gnueabi software-properties-common build-essential libarchive-tools gcc-aarch64-linux-gnu -y && sudo apt install build-essential -y && sudo apt install libssl-dev libffi-dev libncurses5-dev zlib1g zlib1g-dev libreadline-dev libbz2-dev libsqlite3-dev make gcc -y && sudo apt install pigz -y && sudo apt install python2 -y && sudo apt install python3 -y && sudo apt install cpio -y && sudo apt install lld -y && sudo apt install llvm -y
 sudo apt-get install -y build-essential clang bc bison libssl-dev libfl-dev libncurses5-dev libzstd-dev libtinfo5 gperf gcc-multilib gcc-10-multilib g++-multilib g++-10-multilib
 sudo apt-get install -y curl git ftp lftp wget libarchive-tools ccache python2 python2-dev python3 libc6-dev lib32ncurses-dev x11proto-core-dev libx11-dev tree lib32z-dev libgl1-mesa-dev libxml2-utils
 sudo apt-get install -y zip unzip tar gzip bzip2 rar unrar cpio xsltproc bc lib32readline-dev lib32z1-dev liblz4-tool libncurses-dev libsdl1.2-dev build-essential libgtk-3-dev libglu1-mesa-dev freeglut3-dev libxml2 lzop pngcrush schedtool squashfs-tools
