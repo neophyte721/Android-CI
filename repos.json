@@ -2,27 +2,26 @@
   {
     "toolchains": [
       {
-        "repo": "https://gitlab.com/Panchajanya1999/azure-clang",
-        "branch": "main",
-        "name": "azure-clang",
+        "repo": "https://gitlab.com/nekoprjkt/aosp-clang",
+        "branch": "17",
+        "name": "clang",
         "binPath": ["bin"]
       }
     ],
     "params": {
      "ARCH": "arm64",
-      "CC": "azure-clang/bin/clang",
+      "CC": "clang/bin/clang",
       "externalCommand": {
-        "CROSS_COMPILE": "azure-clang/bin/aarch64-linux-gnu-",
-        "CROSS_COMPILE_ARM32": "azure-clang/bin/arm-linux-gnueabi-",
-        "AR": "azure-clang/bin/llvm-ar",
-        "NM": "azure-clang/bin/llvm-nm",
-        "OBJCOPY": "azure-clang/bin/llvm-objcopy",
-        "OBJDUMP": "azure-clang/bin/llvm-objdump",
-        "READELF": "azure-clang/bin/llvm-readelf",
-        "OBJSIZE": "azure-clang/bin/llvm-size",
-        "STRIP": "azure-clang/bin/llvm-strip",
-        "LLVM_AR": "azure-clang/bin/llvm-ar",
-        "LLVM_DIS": "azure-clang/bin/llvm-dis"
+        "CROSS_COMPILE": "clang/bin/aarch64-linux-gnu-",
+        "CROSS_COMPILE_ARM32": "clang/bin/arm-linux-gnueabi-",
+        "AS": "clang/bin/llvm-as",
+        "LD": "clang/bin/ld.lld",
+        "AR": "clang/bin/llvm-ar",
+        "NM": "clang/bin/llvm-nm",
+        "OBJCOPY": "clang/bin/llvm-objcopy",
+        "OBJDUMP": "clang/bin/llvm-objdump",
+        "OBJSIZE": "clang/bin/llvm-size",
+        "STRIP": "clang/bin/llvm-strip"
       }
     },
     "AnyKernel3": {
