@@ -99,10 +99,10 @@ jobs:
           wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/dependency.sh
           bash dependency.sh
 
-      - name: Set Git Config
+      - name: "Set Git Config"
         run: |
-          wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/git-config.sh
-          bash git-config.sh
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
 
       - name: "Setup Anykernel3"
         env:
