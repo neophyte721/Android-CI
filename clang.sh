@@ -103,7 +103,7 @@ git lfs track "libclang.so.18.1.8"
 git lfs track "libclang-cpp.so.18.1"
 git checkout README.md # keep this as it's not part of the toolchain itself
 git add .
-git commit -asm "Nightcord: Update to $rel_date build
+git commit -asm "neophyte: Update to $rel_date build
 LLVM commit: $llvm_commit_url
 Clang Version: $clang_version
 Binutils version: $binutils_ver
