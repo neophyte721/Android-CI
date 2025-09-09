@@ -2,8 +2,8 @@
   {
     "toolchains": [
       {
-        "repo": "https://gitlab.com/nekoprjkt/aosp-clang",
-        "branch": "17",
+        "repo": "https://github.com/neophyte721/neophyte-clang",
+        "branch": "main",
         "name": "clang",
         "binPath": ["bin"]
       }
