@@ -10,10 +10,10 @@ jobs:
       - name: setup 
         run: |
           export TERM=xterm
-          
-          wget https://raw.githubusercontent.com/KanariaAlt/Android-CI/main/Common/Dependency.sh
-          bash Dependency.sh
 
-      - name: tmate ssh link 
+          wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/deps.sh
+          bash deps.sh
+
+      - name: tmate ssh link
         run: |
           tmate -F
