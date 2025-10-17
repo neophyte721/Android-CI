@@ -11,8 +11,8 @@ jobs:
         run: |
           export TERM=xterm
 
-          wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/deps.sh
-          bash deps.sh
+          wget https://raw.githubusercontent.com/neophyte721/Android-CI/main/dependency.sh
+          bash dependency.sh
 
       - name: tmate ssh link
         run: |
