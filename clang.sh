@@ -31,6 +31,12 @@ builder_commit="$(git rev-parse HEAD)"
 msg "Building LLVM's ..."
 chmod +x build-llvm.py
 ./build-llvm.py \
+    --bolt \
+	--build-stage1-only \
+    --build-target distribution \
+	--projects clang lld polly bolt compiler-rt \
+	--lto thin \
+    --pgo llvm \
     --defines LLVM_PARALLEL_COMPILE_JOBS="$(nproc)" LLVM_PARALLEL_LINK_JOBS="$(nproc)" CMAKE_C_FLAGS=-O3 CMAKE_CXX_FLAGS=-O3 \
     --install-folder "$install" \
     --quiet-cmake \
