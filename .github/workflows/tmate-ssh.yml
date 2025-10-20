@@ -16,6 +16,4 @@ jobs:
 
       - name: tmate ssh link
         run: |
-          byobu
-          byobu-enable
           tmate -F
