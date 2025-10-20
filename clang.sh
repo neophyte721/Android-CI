@@ -32,8 +32,6 @@ msg "Building LLVM's ..."
 chmod +x build-llvm.py
 ./build-llvm.py \
     --bolt \
-	--build-stage1-only \
-    --build-target distribution \
 	--projects clang lld polly bolt compiler-rt \
 	--lto thin \
     --pgo llvm \
